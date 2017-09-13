@@ -20,29 +20,29 @@ public:
         T dato;
         NodoB *izq;
         NodoB *der;
-        
+
         NodoB(T d){
             dato = d;
             izq = NULL;
             der = NULL;
         }
     };
-    
+
     NodoB *raiz = NULL;
 
     void insertar(T dato){
         insertarTail(raiz, dato);
     }
-    
+
     void mostrarArbol(){
         mostrarArbolTail(raiz, 0);
     }
-    
+
     bool elimina(T dato){
         NodoB *t = raiz;
         NodoB *padre = raiz;
         int contador = 0;
-        
+
         while (t != NULL) {
             if(t->dato == dato){
                 break;
@@ -53,8 +53,8 @@ public:
             }
             contador++;
         }
-        
-        
+
+
         for(int i = 0; i<contador-1;i++){
             if(padre->dato > dato){
                 padre= padre->izq;
@@ -62,8 +62,8 @@ public:
                 padre = padre->der;
             }
         }
-        
-        
+
+
         if(t->izq == NULL && t->der == NULL){
             if(padre->izq->dato == t->dato){
                 padre->izq = NULL;
@@ -71,29 +71,29 @@ public:
                 padre->der = NULL;
             }
         }
-        
+
         return false;
     }
-    
-    
+
+
     void imprimeAcendente(){
         imprimeAcendenteTail(raiz);
     }
-    
+
     void imprimeDecendente(){
         imprimeDecendenteTail(raiz);
     }
-    
+
     NodoB* buscar(T dato){
         return buscarTail(dato, raiz);
     }
-    
+
     int obtenerAlturaRaiz(){
         int altura;
         altura = obtenerAlturaTail(raiz);
         return altura;
     }
-    
+
     int obtenerAlturaNodo(T dato){
         int altura;
         NodoB *t = buscar(dato);
@@ -103,9 +103,9 @@ public:
         }else{
             return -1;
         }
-        
+
     }
-    
+
     int obtenerNivel(T dato){
         int nivel = -1;
         NodoB *t = buscar(dato);
@@ -126,8 +126,8 @@ public:
         }
         return nivel;
     }
-    
-    
+
+
     int dif(NodoB *nodo){
         int d;
         int i_obtenerAltura = obtenerAlturaTail(nodo->izq);
@@ -135,7 +135,7 @@ public:
         d = (i_obtenerAltura - d_obtenerAltura);
         return d;
     }
-    
+
     NodoB* rotacionDD(NodoB *padre){
         NodoB *temp;
         temp = padre->der;
@@ -143,7 +143,7 @@ public:
         temp->izq = padre;
         return temp;
     }
-    
+
     NodoB* rotacionII(NodoB *padre){
         NodoB* temp;
         temp = padre->izq;
@@ -151,22 +151,22 @@ public:
         temp->der = padre;
         return temp;
     }
-    
+
     NodoB* rotacionID(NodoB *padre){
         NodoB* temp = padre->izq;
         padre->izq = rotacionDD(temp);
         return rotacionII(padre);
     }
-    
+
     NodoB* rotacionDI(NodoB *padre){
         NodoB* temp = padre->der;
         padre->der = rotacionII(temp);
         return rotacionDD(padre);
     }
-    
+
     NodoB* balancear(NodoB *nodo){
         int balanceFactor = dif(nodo);
-        
+
         if (balanceFactor > 1) {
             if (dif (nodo->izq) > 0) {
                 nodo = rotacionII(nodo);
@@ -180,16 +180,16 @@ public:
                 nodo = rotacionDD(nodo);
             }
         }
-        
+
         return nodo;
     }
-    
+
 private:
     NodoB* buscarTail(T dato, NodoB *lugar){
         NodoB *t = raiz;
         NodoB *falso;
         falso = NULL;
-        
+
         while (t != NULL) {
             if(t->dato == dato){
                 lugar = t;
@@ -202,7 +202,7 @@ private:
         }
         return falso;
     }
-    
+
     void imprimeAcendenteTail(NodoB *nodo){
         if(nodo == NULL){
             return;
@@ -212,7 +212,7 @@ private:
             imprimeAcendenteTail(nodo->der);
         }
     }
-    
+
     void imprimeDecendenteTail(NodoB *nodo){
         if(nodo == NULL){
             return;
@@ -221,7 +221,7 @@ private:
         cout << nodo->dato << ", ";
         imprimeDecendenteTail(nodo->izq);
     }
-    
+
     void mostrarArbolTail(NodoB *nodo, int cont){
         if(nodo == NULL){
             return;
@@ -234,7 +234,7 @@ private:
             mostrarArbolTail(nodo->izq, cont+1);
         }
     }
-    
+
     void insertarTail(NodoB *&nodo, T dato){
         if(nodo == NULL){
             //cout << "LA raiz es: " << dato << endl;
@@ -251,7 +251,7 @@ private:
             }
         }
     }
-    
+
     int obtenerAlturaTail(NodoB *nodo){
         int a = 0;
         if(nodo){
@@ -262,7 +262,7 @@ private:
         }
         return a;
     }
-    
+
 };
 
 
@@ -270,4 +270,3 @@ private:
 /*********************************************************************
  *********************** Árbol Rojinegro ******************************
  *********************************************************************/
-
