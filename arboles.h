@@ -23,21 +23,21 @@ public:
         T dato;
         NodoB *izq;
         NodoB *der;
-        
+
         NodoB(T d){
             dato = d;
             izq = NULL;
             der = NULL;
         }
     };
-    
+
     NodoB *raiz = NULL;
 
     void insertar(T dato){
         insertarTail(raiz, dato);
     }
-    
-    
+
+
     void insertarTail(NodoB *&nodo, T dato){
         if(nodo == NULL){
             //cout << "LA raiz es: " << dato << endl;
@@ -52,11 +52,11 @@ public:
             }
         }
     }
-    
+
     void mostrarArbol(){
         mostrarArbolTail(raiz, 0);
     }
-    
+
     void mostrarArbolTail(NodoB *nodo, int cont){
         if(nodo == NULL){
             return;
@@ -69,12 +69,12 @@ public:
             mostrarArbolTail(nodo->izq, cont+1);
         }
     }
-    
+
     bool elimina(T dato){
         NodoB *t = raiz;
         NodoB *padre = raiz;
         int contador = 0;
-        
+
         while (t != NULL) {
             if(t->dato == dato){
                 break;
@@ -85,8 +85,8 @@ public:
             }
             contador++;
         }
-        
-        
+
+
         for(int i = 0; i<contador-1;i++){
             if(padre->dato > dato){
                 padre= padre->izq;
@@ -94,8 +94,8 @@ public:
                 padre = padre->der;
             }
         }
-        
-        
+
+
         if(t->izq == NULL && t->der == NULL){
             if(padre->izq->dato == t->dato){
                 padre->izq = NULL;
@@ -103,14 +103,14 @@ public:
                 padre->der = NULL;
             }
         }
-        
+
         return false;
     }
-    
+
     void imprimeAcendente(){
         imprimeAcendenteTail(raiz);
     }
-    
+
     void imprimeAcendenteTail(NodoB *nodo){
         if(nodo == NULL){
             return;
@@ -120,14 +120,14 @@ public:
             imprimeAcendenteTail(nodo->der);
         }
     }
-    
+
     bool buscar(T dato){
         buscarTail(dato, raiz);
     }
-    
+
     bool buscarTail(T dato, NodoB *&lugar){
         NodoB *t = raiz;
-        
+
         while (t != NULL) {
             if(t->dato == dato){
                 lugar = t;
@@ -140,7 +140,7 @@ public:
         }
         return false;
     }
-    
+
 };
 /*********************************************************************
  *************************** Árbol AVL *********************************
@@ -150,7 +150,7 @@ public:
 /*********************************************************************
  *************************** Árbol B *********************************
  *********************************************************************/
-
+// mis cambios prueba Eugenio Leal
 
 
 /*********************************************************************
