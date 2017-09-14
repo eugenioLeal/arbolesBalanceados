@@ -2,8 +2,8 @@
 //  arboles2.h
 //  arbolesBalanceados
 //
-//  Created by Antony Morales on 13/09/17.
-//  Copyright © 2017 Antony Morales. All rights reserved.
+//  Created by Antony Morales and Eugenio Leal on 13/09/17.
+//  Copyright © 2017 Antony Morales and Eugenio Leal. All rights reserved.
 //
 
 /*********************************************************************
@@ -16,17 +16,17 @@
 using namespace std;
 
 // A BTree node
-//template <class T>
+template <class T>
 class BTreeNode
 {
-    int *keys;  // An array of keys
+    T *keys;  // An array of keys
     int t;      // Minimum degree (defines the range for number of keys)
     BTreeNode **C; // An array of child pointers
     int n;     // Current number of keys
     bool leaf; // Is true when node is leaf. Otherwise false
 
 public:
-    BTreeNode(int _t, bool _leaf);   // Constructor
+    BTreeNode<T>(int t1, bool leaf1) { t = t1; leaf = leaf1; keys = new int[2*t-1]; C = new BTreeNode *[2*t]; n = 0; }
     void traverse(); // Traverse all nodes in a subtree rooted with this node
     BTreeNode *search(int k);   // returns NULL if k is not present.
     int findKey(int k); // Returns the index of the first key that is greater or equal to k
@@ -42,43 +42,29 @@ public:
     void borrowFromNext(int idx); // Borrow a key from the C[idx+1]-th node and place it in C[idx]th node
     void merge(int idx); // Merge idx-th child of the node with (idx+1)th child of the node
     // Make BTree friend of this so that we can access private members of this class in BTree functions
-    friend class BTree;
+    template <class U>friend class BTree;
 };
-BTreeNode::BTreeNode(int t1, bool leaf1)
-{
-    // Copy the given minimum degree and leaf property
-    t = t1;
-    leaf = leaf1;
-
-    // Allocate memory for maximum number of possible keys
-    // and child pointers
-    keys = new int[2*t-1];
-    C = new BTreeNode *[2*t];
-
-    // Initialize the number of keys as 0
-    n = 0;
-}
+template <class T>
 class BTree
 {
-    BTreeNode *root; // Pointer to root node
+    BTreeNode<T> *root; // Pointer to root node
     int t;  // Minimum degree
 public:
     // Constructor (Initializes tree as empty)
     BTree(int _t) { root = NULL; t = _t; }
     void traverse() { if (root != NULL) root->traverse(); }
     // Search a key in this tree
-    BTreeNode* search(int k) { return (root == NULL)? NULL : root->search(k); }
+    BTreeNode<T>* search(int k) { return (root == NULL)? NULL : root->search(k); }
     // The main function that inserts a new key in this B-Tree
     void insert(int k);
     // The main function that removes a new key in thie B-Tree
     void remove(int k);
 };
 
-
-
 // A utility function that returns the index of the first key that is
 // greater than or equal to k
-int BTreeNode::findKey(int k)
+template <class T>
+int BTreeNode<T>::findKey(int k)
 {
     int idx=0;
     while (idx<n && keys[idx] < k)
@@ -87,7 +73,8 @@ int BTreeNode::findKey(int k)
 }
 
 // A function to remove the key k from the sub-tree rooted with this node
-void BTreeNode::remove(int k)
+template <class T>
+void BTreeNode<T>::remove(int k)
 {
     int idx = findKey(k);
 
@@ -134,7 +121,8 @@ void BTreeNode::remove(int k)
 }
 
 // A function to remove the idx-th key from this node - which is a leaf node
-void BTreeNode::removeFromLeaf (int idx)
+template <class T>
+void BTreeNode<T>::removeFromLeaf (int idx)
 {
 
     // Move all the keys after the idx-th pos one place backward
@@ -148,7 +136,8 @@ void BTreeNode::removeFromLeaf (int idx)
 }
 
 // A function to remove the idx-th key from this node - which is a non-leaf node
-void BTreeNode::removeFromNonLeaf(int idx)
+template <class T>
+void BTreeNode<T>::removeFromNonLeaf(int idx)
 {
 
     int k = keys[idx];
@@ -189,7 +178,8 @@ void BTreeNode::removeFromNonLeaf(int idx)
 }
 
 // A function to get predecessor of keys[idx]
-int BTreeNode::getPred(int idx)
+template <class T>
+int BTreeNode<T>::getPred(int idx)
 {
     // Keep moving to the right most node until we reach a leaf
     BTreeNode *cur=C[idx];
@@ -200,7 +190,8 @@ int BTreeNode::getPred(int idx)
     return cur->keys[cur->n-1];
 }
 
-int BTreeNode::getSucc(int idx)
+template <class T>
+int BTreeNode<T>::getSucc(int idx)
 {
 
     // Keep moving the left most node starting from C[idx+1] until we reach a leaf
@@ -213,7 +204,8 @@ int BTreeNode::getSucc(int idx)
 }
 
 // A function to fill child C[idx] which has less than t-1 keys
-void BTreeNode::fill(int idx)
+template <class T>
+void BTreeNode<T>::fill(int idx)
 {
 
     // If the previous child(C[idx-1]) has more than t-1 keys, borrow a key
@@ -241,7 +233,8 @@ void BTreeNode::fill(int idx)
 
 // A function to borrow a key from C[idx-1] and insert it
 // into C[idx]
-void BTreeNode::borrowFromPrev(int idx)
+template <class T>
+void BTreeNode<T>::borrowFromPrev(int idx)
 {
 
     BTreeNode *child=C[idx];
@@ -281,7 +274,8 @@ void BTreeNode::borrowFromPrev(int idx)
 
 // A function to borrow a key from the C[idx+1] and place
 // it in C[idx]
-void BTreeNode::borrowFromNext(int idx)
+template <class T>
+void BTreeNode<T>::borrowFromNext(int idx)
 {
 
     BTreeNode *child=C[idx];
@@ -319,7 +313,8 @@ void BTreeNode::borrowFromNext(int idx)
 
 // A function to merge C[idx] with C[idx+1]
 // C[idx+1] is freed after merging
-void BTreeNode::merge(int idx)
+template <class T>
+void BTreeNode<T>::merge(int idx)
 {
     BTreeNode *child = C[idx];
     BTreeNode *sibling = C[idx+1];
@@ -359,13 +354,14 @@ void BTreeNode::merge(int idx)
 }
 
 // The main function that inserts a new key in this B-Tree
-void BTree::insert(int k)
+template <class T>
+void BTree<T>::insert(int k)
 {
     // If tree is empty
     if (root == NULL)
     {
         // Allocate memory for root
-        root = new BTreeNode(t, true);
+        root = new BTreeNode<T>(t, true);
         root->keys[0] = k;  // Insert key
         root->n = 1;  // Update number of keys in root
     }
@@ -375,7 +371,7 @@ void BTree::insert(int k)
         if (root->n == 2*t-1)
         {
             // Allocate memory for new root
-            BTreeNode *s = new BTreeNode(t, false);
+            BTreeNode<T> *s = new BTreeNode<T>(t, false);
 
             // Make old root as child of new root
             s->C[0] = root;
@@ -401,7 +397,8 @@ void BTree::insert(int k)
 // A utility function to insert a new key in this node
 // The assumption is, the node must be non-full when this
 // function is called
-void BTreeNode::insertNonFull(int k)
+template <class T>
+void BTreeNode<T>::insertNonFull(int k)
 {
     // Initialize index as index of rightmost element
     int i = n-1;
@@ -446,7 +443,8 @@ void BTreeNode::insertNonFull(int k)
 
 // A utility function to split the child y of this node
 // Note that y must be full when this function is called
-void BTreeNode::splitChild(int i, BTreeNode *y)
+template <class T>
+void BTreeNode<T>::splitChild(int i, BTreeNode *y)
 {
     // Create a new node which is going to store (t-1) keys
     // of y
@@ -488,7 +486,8 @@ void BTreeNode::splitChild(int i, BTreeNode *y)
 }
 
 // Function to traverse all nodes in a subtree rooted with this node
-void BTreeNode::traverse()
+template <class T>
+void BTreeNode<T>::traverse()
 {
     // There are n keys and n+1 children, travers through n keys
     // and first n children
@@ -508,7 +507,8 @@ void BTreeNode::traverse()
 }
 
 // Function to search key k in subtree rooted with this node
-BTreeNode *BTreeNode::search(int k)
+template <class T>
+BTreeNode<T> *BTreeNode<T>::search(int k)
 {
     // Find the first key greater than or equal to k
     int i = 0;
@@ -527,7 +527,8 @@ BTreeNode *BTreeNode::search(int k)
     return C[i]->search(k);
 }
 
-void BTree::remove(int k)
+template <class T>
+void BTree<T>::remove(int k)
 {
     if (!root)
     {
@@ -542,7 +543,7 @@ void BTree::remove(int k)
     //  if it has a child, otherwise set root as NULL
     if (root->n==0)
     {
-        BTreeNode *tmp = root;
+        BTreeNode<T> *tmp = root;
         if (root->leaf)
             root = NULL;
         else
